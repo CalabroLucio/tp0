@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <netdb.h>
 
 
 void* serializar_paquete(t_paquete* paquete, int bytes)
@@ -16,10 +17,7 @@ void* serializar_paquete(t_paquete* paquete, int bytes)
 	return magic;
 }
 
-int crear_conexion(char *ip, char* puerto)
-{
-
-
+int crear_conexion(char *ip, char* puerto){
 	//memset(&hints, 0, sizeof(hints));
 	//hints.ai_family = AF_INET;
 	//hints.ai_socktype = SOCK_STREAM;
@@ -28,9 +26,13 @@ int crear_conexion(char *ip, char* puerto)
 	// Ahora vamos a crear el socket.
 	int socket_cliente = 0;
 
-// Deep seek code
+	// Deep seek code
 	
-    struct addrinfo hints, *servinfo, *p;
+    struct addrinfo hints;
+	struct addrinfo *servinfo, *p;
+
+	t_log* logger;
+	logger = log_create("log.log","log_log",true,LOG_LEVEL_INFO);
 
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET;       // IPv4
@@ -67,11 +69,6 @@ int crear_conexion(char *ip, char* puerto)
 
 // Deep seek code 
 	
-
-
-	freeaddrinfo(server_info);
-
-	return socket_cliente;
 }
 
 void enviar_mensaje(char* mensaje, int socket_cliente)

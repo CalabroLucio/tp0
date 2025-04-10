@@ -63,9 +63,20 @@ int esperar_cliente(int socket_servidor)
 {
 
 	// Aceptamos un nuevo cliente
-	int socket_cliente;
+	//int socket_cliente;
 	log_info(logger, "Se conecto un cliente!");
-
+//Deep seek
+	struct sockaddr_in cliente_addr;
+    socklen_t addr_len = sizeof(cliente_addr);
+    
+    int socket_cliente = accept(socket_servidor, (struct sockaddr*)&cliente_addr, &addr_len);
+    if (socket_cliente == -1) {
+        log_error(logger, "Error al aceptar cliente");
+        return -1;
+    }
+    
+    log_info(logger, "Cliente conectado desde IP: %s", inet_ntoa(cliente_addr.sin_addr));
+//Deep seek
 	return socket_cliente;
 }
 
