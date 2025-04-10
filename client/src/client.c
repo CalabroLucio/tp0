@@ -18,8 +18,8 @@ int main(void)
 
 	logger = iniciar_logger();
 
-	
-	log_info(logger,"HOLA SOY UN LOG");
+
+	//log_info(logger,"HOLA SOY UN LOG");
 	//log_destroy(logger);
 	
 
@@ -30,7 +30,6 @@ int main(void)
 	/* ---------------- ARCHIVOS DE CONFIGURACION ---------------- */
 
 	config = iniciar_config();
-	
 
 	valor = config_get_string_value(config,"CLAVE");
 	ip = config_get_string_value(config,"IP");
@@ -41,17 +40,14 @@ int main(void)
 
 	// Loggeamos el valor de config
 
-	log_info(logger,ip);
-	log_info(logger,valor);
-	log_info(logger,puerto);
+	//log_info(logger,ip);
+	//log_info(logger,valor);
+	//log_info(logger,puerto);
 
 
 	/* ---------------- LEER DE CONSOLA ---------------- */
-	
-	
-	log_info(logger,"PARTE 3");
-	log_destroy(logger);
-	
+	//leer_consola(logger);
+		
 	
 	/*---------------------------------------------------PARTE 3-------------------------------------------------------------*/
 
@@ -61,6 +57,8 @@ int main(void)
 	conexion = crear_conexion(ip, puerto);
 
 	// Enviamos al servidor el valor de CLAVE como mensaje
+	enviar_mensaje(valor,conexion);
+
 	enviar_mensaje(valor,conexion);
 
 	// Armamos y enviamos el paquete
@@ -75,48 +73,28 @@ int main(void)
 t_log* iniciar_logger(void)
 {
 	t_log* nuevo_logger;
-
 	nuevo_logger = log_create("tp0.log","tp0_log",true,LOG_LEVEL_INFO);
-
 	return nuevo_logger;
 }
 
 t_config* iniciar_config(void)
 {
 	t_config* nuevo_config;
-
 	nuevo_config = config_create("cliente.config");
-
 	return nuevo_config;
 }
 
 void leer_consola(t_log* logger)
 {
 
-	// La primera te la dejo de yapa
-	
-
-//	char *linea;
-//	linea = "no";
-//	while (strcmp(linea,"\0"))
-//	{
-//		linea = readline("> ");
-//	    log_info(logger,linea);
-//	}
-
-	char* leido;
-//	t_paquete* paquete;
-
-	// Leemos y esta vez agregamos las lineas al paquete
-
-    t_list* lineas = list_create();
-    
-    while ((leido = readline("> ")) != NULL && strcmp(leido, "") != 0) {
-        list_add(lineas, leido);
-    }
-    
-    // Aquí podrías convertir la lista en un paquete
-    list_destroy(lineas); // Liberar memoria
+	char *linea;
+	linea = "no";
+	while (strcmp(linea,"\0"))
+	{
+		linea = readline("> ");
+	    log_info(logger,linea);
+	}
+	log_info(logger,"PARTE 3");
 
 	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
 

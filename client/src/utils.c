@@ -1,5 +1,4 @@
 #include "utils.h"
-#include <netdb.h>
 
 
 void* serializar_paquete(t_paquete* paquete, int bytes)
@@ -17,58 +16,33 @@ void* serializar_paquete(t_paquete* paquete, int bytes)
 	return magic;
 }
 
-int crear_conexion(char *ip, char* puerto){
-	//memset(&hints, 0, sizeof(hints));
-	//hints.ai_family = AF_INET;
-	//hints.ai_socktype = SOCK_STREAM;
+int crear_conexion(char *ip, char* puerto)
+{
+	struct addrinfo hints;
+	struct addrinfo *server_info;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
 	//hints.ai_flags = AI_PASSIVE;
+
+	getaddrinfo(ip, puerto, &hints, &server_info);
 
 	// Ahora vamos a crear el socket.
 	int socket_cliente = 0;
 
-	// Deep seek code
-	
-    struct addrinfo hints;
-	struct addrinfo *servinfo, *p;
-
-	t_log* logger;
-	logger = log_create("log.log","log_log",true,LOG_LEVEL_INFO);
-
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_INET;       // IPv4
-    hints.ai_socktype = SOCK_STREAM; // TCP
-    // ¡Sin AI_PASSIVE! (es para servidores)
-
-    if (getaddrinfo(ip, puerto, &hints, &servinfo) != 0) {
-        log_error(logger, "Error al resolver la dirección del servidor");
-        return -1;
-    }
-
-    // Iterar direcciones y conectarse
-    for (p = servinfo; p != NULL; p = p->ai_next) {
-        socket_cliente = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-        if (socket_cliente == -1) continue;
+	socket_cliente = socket(server_info->ai_family,
+                    	 server_info->ai_socktype,
+                         server_info->ai_protocol);
 
 	// Ahora que tenemos el socket, vamos a conectarlo
-        if (connect(socket_cliente, p->ai_addr, p->ai_addrlen) == 0) {
-            break; // ¡Conexión exitosa!
-        }
 
-        close(socket_cliente); // Si falla, cerrar y probar siguiente dirección
-    }
+	connect(socket_cliente, server_info->ai_addr, server_info->ai_addrlen);
 
-    if (p == NULL) {
-        log_error(logger, "No se pudo conectar al servidor");
-        freeaddrinfo(servinfo);
-        return -1;
-    }
 
-    freeaddrinfo(servinfo);
-    log_info(logger, "Conexión establecida con el servidor");
-    return socket_cliente;
+	freeaddrinfo(server_info);
 
-// Deep seek code 
-	
+	return socket_cliente;
 }
 
 void enviar_mensaje(char* mensaje, int socket_cliente)

@@ -32,3 +32,7 @@ int main(void) {
 
 void iterator(char* value) {
 	log_info(logger,"%s", value);
+<<<<<<< HEAD
+=======
+}
+>>>>>>> 59f822b

@@ -10,7 +10,8 @@ int iniciar_servidor(void)
 
 	struct addrinfo hints, *servinfo, *p;
 
-	logger = log_create("tp0.log","tp0_log",true,LOG_LEVEL_INFO);
+	logger = log_create("log.log", "Servidor", 1, LOG_LEVEL_TRACE);
+	log_info(logger,"Iniciando servidor...");
 
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
@@ -25,16 +26,17 @@ int iniciar_servidor(void)
 		socket_servidor = socket(p->ai_family,p->ai_socktype,p->ai_protocol);
 		
 		if (socket_servidor == -1){
-			log_warning(logger,"Fallo socket(),probando siguiente");
+			//log_warning(logger,"Fallo socket(),probando siguiente");
 			continue;
 		}
 
 		// Asociamos el socket a un puerto
 		// Asociar (bind) el socket a la dirección IP + puerto
+		setsockopt(socket_servidor, SOL_SOCKET, SO_REUSEPORT, &(int){1}, sizeof(int));
 
 		if (bind(socket_servidor,p->ai_addr,p->ai_addrlen) == -1){
 			close(socket_servidor);
-			log_warning(logger,"Fallo bind(),probando siguiente");
+			//log_warning(logger,"Fallo bind(),probando siguiente");
 			continue;
 		}
 
@@ -44,7 +46,7 @@ int iniciar_servidor(void)
 	// Escuchamos las conexiones entrantes
 
 	if (listen(socket_servidor,10) == -1){ //10 -> maximo de conexiones en cola
-		log_error(logger,"Error con el listen()");
+		//log_error(logger,"Error con el listen()");
 		close(socket_servidor);
 		freeaddrinfo(servinfo);
 		exit(1);
@@ -53,17 +55,17 @@ int iniciar_servidor(void)
 
 
 	freeaddrinfo(servinfo);
-	log_trace(logger, "Listo para escuchar a mi cliente");
-	log_destroy(logger);
+	//log_trace(logger, "Listo para escuchar a mi cliente");
+	//log_destroy(logger);
 
 	return socket_servidor;
 }
 
 int esperar_cliente(int socket_servidor)
 {
-
+	int socket_cliente = accept(socket_servidor,NULL, NULL);
 	// Aceptamos un nuevo cliente
-	//int socket_cliente;
+	
 	log_info(logger, "Se conecto un cliente!");
 //Deep seek
 	struct sockaddr_in cliente_addr;
