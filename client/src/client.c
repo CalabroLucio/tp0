@@ -62,6 +62,7 @@ int main(void)
 	    log_info(logger,linea);
 	}
 	log_info(logger,"PARTE 3");
+	log_destroy(logger);
 	
 	
 	/*---------------------------------------------------PARTE 3-------------------------------------------------------------*/
@@ -72,6 +73,7 @@ int main(void)
 	conexion = crear_conexion(ip, puerto);
 
 	// Enviamos al servidor el valor de CLAVE como mensaje
+	enviar_mensaje(valor,conexion);
 
 	// Armamos y enviamos el paquete
 	paquete(conexion);
